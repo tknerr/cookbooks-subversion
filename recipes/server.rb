@@ -20,24 +20,22 @@
 include_recipe "apache2::mod_dav_svn"
 include_recipe "subversion::client"
 
-directory node[:subversion][:repo_dir] do
+svn_base = node[:subversion][:svn_dir]
+repo_base = "#{svn_base}/repositories"
+
+directory repo_base do
+  action :create
   recursive true
   owner node[:apache][:user]
   group node[:apache][:user]
   mode "0755"
 end
 
-execute "svnadmin create repo" do
-  command "svnadmin create #{node[:subversion][:repo_dir]}/#{node[:subversion][:repo_name]}"
-  creates "#{node[:subversion][:repo_dir]}/#{node[:subversion][:repo_name]}"
-  user node[:apache][:user]
-  group node[:apache][:user]
-  environment ({'HOME' => '/var/www'})
-end
-
-execute "create htpasswd file" do
-  command "htpasswd -scb #{node[:subversion][:repo_dir]}/htpasswd #{node[:subversion][:user]} #{node[:subversion][:password]}"
-  creates "#{node[:subversion][:repo_dir]}/htpasswd"
+file "#{svn_base}/htpasswd" do
+  action :create
+  owner "root"
+  group "root"
+  mode "0644"
 end
 
 web_app "subversion" do
@@ -46,25 +44,40 @@ web_app "subversion" do
   notifies :restart, resources(:service => "apache2")
 end
 
-#users = data_bag_item("#{node[:hostname]","users")
-subversion_bag = data_bag_item(node[:hostname],"subversion")
+
+subversion_bag = data_bag_item(node[:hostname], "subversion")
+Chef::Log.info "subversion bag: #{subversion_bag.inspect}"
 repos = subversion_bag["repos"]
 
-users_bag = data_bag_item("users","users")
-Chef::Log.info users_bag.inspect
-
+users_bag = data_bag_item("users", "users")
+Chef::Log.info "users bag: #{users_bag.inspect}"
 global_users = users_bag["users"]
 
+repo_users = []
 repos.each do |repo|
-  puts repo["name"]
 
-  repo["rw"].each do |username|
-    user = global_users.find {|u| u["name"] == username}
-    
-    if not user then raise "user #{username} does not exist" end
+  repo_name = repo['name']
+  execute "svnadmin create repo #{repo_name}" do
+    command "svnadmin create #{repo_base}/#{repo_name}"
+    creates "#{repo_base}/#{repo_name}"
+    user node[:apache][:user]
+    group node[:apache][:user]
+    environment ({'HOME' => '/var/www'})
+  end
 
-    puts "setting acl for rw user user #{user['name']} with password #{user['password']}"
+  repo_users += (repo["rw"] || []) 
+  repo_users += (repo["r"] || [])
+end
 
-    system("htpasswd -sb #{node[:subversion][:repo_dir]}/htpasswd #{user['name']} #{user['password']}")
+repo_users.uniq.each do |username|
+  user = global_users.find {|u| u["name"] == username}
+  raise "user #{username} does not exist" unless user
+  
+  execute "adding #{username} to #{svn_base}/htpasswd" do
+    command "htpasswd -sb #{svn_base}/htpasswd #{user['name']} #{user['password']}"
   end
 end
+
+
+
+ 

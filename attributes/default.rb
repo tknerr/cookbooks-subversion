@@ -17,11 +17,8 @@
 # limitations under the License.
 #
 
-default['subversion']['repo_dir'] = '/srv/svn'
-default['subversion']['repo_name'] = 'repo'
+default['subversion']['svn_dir'] = '/srv/svn'
 default['subversion']['server_name'] = 'svn'
-default['subversion']['user'] = 'subversion'
-default['subversion']['password'] = 'subversion'
 
 # For Windows
 default['subversion']['msi_source'] = "http://downloads.sourceforge.net/project/win32svn/1.7.0/Setup-Subversion-1.7.0.msi"
