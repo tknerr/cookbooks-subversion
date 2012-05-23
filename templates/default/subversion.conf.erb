@@ -1,15 +1,14 @@
 <Location /svn>
-
-  DAV svn
-
-  SVNPath /srv/svn/repo
-
-  AuthType Basic
-
-  AuthName "Subversion repository"
-
-  AuthUserFile /srv/svn/htpasswd
-
-  Require valid-user
-
+    DAV svn 
+    SVNParentPath /srv/svn/repositories
+    #access control policy
+    AuthzSVNAccessFile /srv/svn/access.conf
+    #try anonymous access first, resort to real authentication if necessary
+    Satisfy Any
+    Require valid-user
+    #how to authenticate a user
+    AuthType Basic
+    AuthName "Subversion Repository"
+    AuthBasicProvider file
+    AuthUserFile "/srv/svn/htpasswd"
 </Location>
