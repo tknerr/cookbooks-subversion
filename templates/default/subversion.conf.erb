@@ -1,8 +1,8 @@
 <Location /svn>
     DAV svn 
-    SVNParentPath /srv/svn/repositories
+    SVNParentPath <%= node[:subversion][:repo_base_dir] %>
     #access control policy
-    AuthzSVNAccessFile /srv/svn/access.conf
+    AuthzSVNAccessFile <%= node[:subversion][:svn_dir] %>/access.conf
     #try anonymous access first, resort to real authentication if necessary
     Satisfy Any
     Require valid-user
@@ -10,5 +10,5 @@
     AuthType Basic
     AuthName "Subversion Repository"
     AuthBasicProvider file
-    AuthUserFile "/srv/svn/htpasswd"
+    AuthUserFile "<%= node[:subversion][:svn_dir] %>/htpasswd"
 </Location>

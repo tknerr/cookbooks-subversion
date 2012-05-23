@@ -18,22 +18,39 @@ Requirements
 * apache2
 * windows
 
+
+Attributes
+==========
+
+See `attributes/default.rb` for default values. The attributes are
+used in the server recipe.
+
+
+* `node['subversion']['svn_dir']` - filesystem location of the
+  base directory for svn (containing the `htaccess` and `access.conf` files).
+* `node['subversion']['repo_base_dir']` - filesystem location of the
+  base directory for the svn repositories to serve.
+* `node['subversion']['server_name']` - server name used in the svn vhost.
+
+The repositories and users are defined in databags as shown below.
+
 Databags
 ========
+
 databags/$HOSTNAME/subversion.json
 ```
 {
   "id": "subversion",
   "repos": [
-  	{
-  		"name": "repo1", 
-  		"rw": ["hans", "peter"],
-  		"r": ["karl"]
-  	},
-  	{
-  		"name": "repo2", 
-  		"rw": ["karl", "ulli"]
-  	}]
+    {
+      "name": "repo1", 
+      "rw": ["hans", "peter"],
+      "r": ["karl"]
+    },
+    {
+      "name": "repo2", 
+      "rw": ["karl", "ulli"]
+    }]
 }
 ```
 databags/users/users.json
@@ -41,8 +58,8 @@ databags/users/users.json
 {
   "id": "users",
   "users": [
-  	{
-  		"name": "hans", 
+    {
+      "name": "hans", 
       "password": "123"
     },
     { 
@@ -52,29 +69,13 @@ databags/users/users.json
     {
       "name": "karl", 
       "password": "123"
-  	},
+    },
     {
       "name": "ulli", 
       "password": "123"
     }]
 }
 ```
-
-Attributes
-==========
-
-See `attributes/default.rb` for default values. The attributes are
-used in the server recipe.
-
-* `node['subversion']['repo_dir']` - filesystem location of the
-  repository to serve.
-* `node['subversion']['repo_name']` - name of the repository to serve up.
-* `node['subversion']['server_name']` - server name used in the svn vhost.
-* `node['subversion']['user']` - user to log into the svn vhost.
-* `node['subversion']['password']` - htpasswd for the subversion user
-  in the server recipe. This should be overridden as the default is
-  not secure.
-
 
 Recipes
 =======

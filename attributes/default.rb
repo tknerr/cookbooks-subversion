@@ -18,6 +18,7 @@
 #
 
 default['subversion']['svn_dir'] = '/srv/svn'
+default['subversion']['repo_base_dir'] = "#{node['subversion']['svn_dir']}/repositories"
 default['subversion']['server_name'] = 'svn'
 
 # For Windows

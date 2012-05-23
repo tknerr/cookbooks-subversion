@@ -20,8 +20,10 @@
 include_recipe "apache2::mod_dav_svn"
 include_recipe "subversion::client"
 
+apache_module "authz_svn"
+
 svn_base = node[:subversion][:svn_dir]
-repo_base = "#{svn_base}/repositories"
+repo_base = node[:subversion][:repo_base_dir]
 
 directory repo_base do
   action :create
@@ -77,6 +79,17 @@ repo_users.uniq.each do |username|
     command "htpasswd -sb #{svn_base}/htpasswd #{user['name']} #{user['password']}"
   end
 end
+
+template "#{svn_base}/access.conf" do
+  source "access.conf.erb"
+  variables(
+    :repositories => repos
+  )
+  owner "root"
+  group "root"
+  mode "0644"
+end
+
 
 
 
