@@ -1,0 +1,11 @@
+[groups]
+<% @repositories.each do |repository| %>
+	<%= repository %>_commiters = <%= repository['rw'].join(',') %>
+	<%= repository %>_trackers = <%= repository['r'].join(',') %>
+<% end %>
+
+<% @repositories.each do |repository| %>
+	[<%= repository %>:/]
+	@<%= repository %>_commiters = rw
+	@<%= repository %>_trackers = r
+<% end %>
