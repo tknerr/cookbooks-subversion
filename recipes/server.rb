@@ -27,20 +27,44 @@ directory node[:subversion][:repo_dir] do
   mode "0755"
 end
 
+execute "svnadmin create repo" do
+  command "svnadmin create #{node[:subversion][:repo_dir]}/#{node[:subversion][:repo_name]}"
+  creates "#{node[:subversion][:repo_dir]}/#{node[:subversion][:repo_name]}"
+  user node[:apache][:user]
+  group node[:apache][:user]
+  environment ({'HOME' => '/var/www'})
+end
+
+execute "create htpasswd file" do
+  command "htpasswd -scb #{node[:subversion][:repo_dir]}/htpasswd #{node[:subversion][:user]} #{node[:subversion][:password]}"
+  creates "#{node[:subversion][:repo_dir]}/htpasswd"
+end
+
 web_app "subversion" do
   template "subversion.conf.erb"
   server_name "#{node[:subversion][:server_name]}.#{node[:domain]}"
   notifies :restart, resources(:service => "apache2")
 end
 
-execute "svnadmin create repo" do
-  command "svnadmin create #{node[:subversion][:repo_dir]}/#{node[:subversion][:repo_name]}"
-  creates "#{node[:subversion][:repo_dir]}/#{node[:subversion][:repo_name]}"
-  user node[:apache][:user]
-  group node[:apache][:user]
-end
+#users = data_bag_item("#{node[:hostname]","users")
+subversion_bag = data_bag_item(node[:hostname],"subversion")
+repos = subversion_bag["repos"]
 
-execute "create htpasswd file" do
-  command "htpasswd -scb #{node[:subversion][:repo_dir]}/htpasswd #{node[:subversion][:user]} #{node[:subversion][:password]}"
-  creates "#{node[:subversion][:repo_name]}/htpasswd"
+users_bag = data_bag_item("users","users")
+Chef::Log.info users_bag.inspect
+
+global_users = users_bag["users"]
+
+repos.each do |repo|
+  puts repo["name"]
+
+  repo["rw"].each do |username|
+    user = global_users.find {|u| u["name"] == username}
+    
+    if not user then raise "user #{username} does not exist" end
+
+    puts "setting acl for rw user user #{user['name']} with password #{user['password']}"
+
+    system("htpasswd -sb #{node[:subversion][:repo_dir]}/htpasswd #{user['name']} #{user['password']}")
+  end
 end

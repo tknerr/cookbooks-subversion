@@ -18,6 +18,48 @@ Requirements
 * apache2
 * windows
 
+Databags
+========
+databags/$HOSTNAME/subversion.json
+```
+{
+  "id": "subversion",
+  "repos": [
+  	{
+  		"name": "repo1", 
+  		"rw": ["hans", "peter"],
+  		"r": ["karl"]
+  	},
+  	{
+  		"name": "repo2", 
+  		"rw": ["karl", "ulli"]
+  	}]
+}
+```
+databags/users/users.json
+```
+{
+  "id": "users",
+  "users": [
+  	{
+  		"name": "hans", 
+      "password": "123"
+    },
+    { 
+      "name": "peter", 
+      "password": "123"
+    },
+    {
+      "name": "karl", 
+      "password": "123"
+  	},
+    {
+      "name": "ulli", 
+      "password": "123"
+    }]
+}
+```
+
 Attributes
 ==========
 
