@@ -3,7 +3,7 @@
 
 Vagrant::Config.run do |config|
 
-  config.vm.box = "ubuntu-12.04-server-amd64-vagrant.box"
+  config.vm.box = "ubuntu-12.04-server-amd64-vagrant"
   config.vm.box_url = "W:\\boxes\\ubuntu-12.04-server-amd64-vagrant.box"
 
 
