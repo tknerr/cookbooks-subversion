@@ -16,7 +16,6 @@ Requirements
 ## Cookbooks:
 
 * apache2
-* windows
 
 
 Attributes
@@ -37,7 +36,9 @@ The repositories and users are defined in databags as shown below.
 Databags
 ========
 
-databags/$HOSTNAME/subversion.json
+The repositories and access rights are managed in a databag per host (i.e. identified by `node['hostname']`) in the `subversion` item.
+
+Example: `$CHEF_REPO/databags/#{node['hostname']}/subversion.json`
 ```
 {
   "id": "subversion",
@@ -53,7 +54,10 @@ databags/$HOSTNAME/subversion.json
     }]
 }
 ```
-databags/users/users.json
+
+For now the users and their credentials are defined in a global `users` databag in the `users` item, but should be replaced by another mechanism (or at least using encrypted databags) in the future.
+
+Example: `$CHEF_REPO/databags/users/users.json`
 ```
 {
   "id": "users",
@@ -103,8 +107,6 @@ Usage
 On nodes where `subversion` should be installed such as application
 servers that will check out a repository, use `recipe[subversion]`. If
 you would like a subversion server, use `recipe[subversion::server]`.
-You should override `node['subversion']['password']` in the role that
-applies the server recipe.
 
 License and Author
 ==================
@@ -112,6 +114,7 @@ License and Author
 Author:: Adam Jacob <adam@opscode.com>
 Author:: Joshua Timberman <joshua@opscode.com>
 Author:: Daniel DeLeo <dan@kallistec.com>
+Author:: Torben Knerr <mail@tknerr.de>
 
 Copyright:: 2008-2011, Opscode, Inc
 
