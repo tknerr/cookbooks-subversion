@@ -36,7 +36,7 @@ The repositories and users are defined in databags as shown below.
 Databags
 ========
 
-The repositories and access rights are managed in a databag per host (i.e. identified by `node['hostname']`) in the `subversion` item.
+For the `subversion::server` recipe the repositories and access rights are managed in a databag per host (i.e. identified by `node['hostname']`) in the `subversion` item.
 
 Example: `$CHEF_REPO/databags/#{node['hostname']}/subversion.json`
 ```
