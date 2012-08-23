@@ -22,14 +22,14 @@ include_recipe "subversion::client"
 
 apache_module "authz_svn"
 
-svn_base = node[:subversion][:svn_dir]
-repo_base = node[:subversion][:repo_base_dir]
+svn_base = node['subversion']['svn_dir']
+repo_base = node['subversion']['repo_base_dir']
 
 directory repo_base do
   action :create
   recursive true
-  owner node[:apache][:user]
-  group node[:apache][:user]
+  owner node['apache']['user']
+  group node['apache']['user']
   mode "0755"
 end
 
@@ -42,12 +42,12 @@ end
 
 web_app "subversion" do
   template "subversion.conf.erb"
-  server_name "#{node[:subversion][:server_name]}.#{node[:domain]}"
+  server_name "#{node['subversion']['server_name']}.#{node['domain']}"
   notifies :restart, resources(:service => "apache2")
 end
 
 
-subversion_bag = data_bag_item(node[:hostname], "subversion")
+subversion_bag = data_bag_item(node['hostname'], "subversion")
 Chef::Log.info "subversion bag: #{subversion_bag.inspect}"
 repos = subversion_bag["repos"]
 
@@ -62,8 +62,8 @@ repos.each do |repo|
   execute "svnadmin create repo #{repo_name}" do
     command "svnadmin create #{repo_base}/#{repo_name}"
     creates "#{repo_base}/#{repo_name}"
-    user node[:apache][:user]
-    group node[:apache][:user]
+    user node['apache']['user']
+    group node['apache']['user']
     environment ({'HOME' => '/var/www'})
   end
 
