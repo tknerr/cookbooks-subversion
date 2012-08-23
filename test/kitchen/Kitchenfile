@@ -1,0 +1,17 @@
+
+# exclude centos configurations (see KITCHEN-12)
+platform :centos do
+end
+
+# use our ubuntu basebox for now
+platform :ubuntu do
+  version "12.04" do
+    box "ubuntu-12.04-server-amd64-vagrant"
+    box_url "W:\\boxes\\ubuntu-12.04-server-amd64-vagrant.box"
+    # box_url "http://dl.dropbox.com/u/13494216/ubuntu-12.04-server-amd64-vagrant.box"
+  end
+end
+
+cookbook "subversion" do
+  runtimes []
+end
