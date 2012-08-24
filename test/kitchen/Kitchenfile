@@ -13,5 +13,8 @@ platform :ubuntu do
 end
 
 cookbook "subversion" do
-  runtimes []
+  configuration "client"
+  configuration "server"
+  runtimes ['1.9.2']
+  run_list_extras ['subversion_test::setup']
 end
