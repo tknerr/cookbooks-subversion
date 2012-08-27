@@ -10,11 +10,11 @@ describe ChefRun.new('subversion::client') do
       when 'ubuntu'
         it { should install_package "subversion-tools" }
         context "version < 8.04" do
-          before { mock_and_converge('ubuntu', '7.10') }
+          before { mock_and_converge(platform, '7.10') }
           it { should install_package "libsvn-core-perl" }
         end
         context "version >= 8.04" do
-          before { mock_and_converge('ubuntu', '8.04') }
+          before { mock_and_converge(platform, '8.04') }
           it { should install_package "libsvn-perl" }
         end
       when 'centos', 'redhat', 'fedora'
