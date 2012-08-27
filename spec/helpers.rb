@@ -12,5 +12,5 @@ end
 
 # converge node with the given recipe
 def converge_node(recipe)
-  ChefSpec::ChefRunner.new('..').converge recipe
+  ChefSpec::ChefRunner.new.converge recipe
 end
