@@ -5,3 +5,4 @@ gem 'test-kitchen', '~> 0.5.2'
 
 # chefspec and friends
 gem 'chefspec', '~> 0.6.1'
+gem 'fauxhai', '~> 0.0.2'
