@@ -4,7 +4,7 @@ describe ChefRun.new('subversion::client') do
     
   %w{ redhat centos fedora ubuntu debian }.each do |platform|
     context "on platform #{platform}" do
-      before { mock_and_converge(platform) }  
+      before(:all) { mock_and_converge(platform) }  
       it { should install_package 'subversion' }
       case platform
       when 'ubuntu'
