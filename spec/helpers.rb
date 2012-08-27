@@ -1,6 +1,26 @@
 require 'chefspec'
 require 'fauxhai'
 
+# ChefRun subject  
+class ChefRun
+  def initialize(recipe)
+    @recipe = recipe
+  end
+
+  def converge
+    @runner = ChefSpec::ChefRunner.new
+    @runner.converge @recipe
+  end
+
+  def method_missing(name, *args, &block)
+    @runner.send(name, *args, &block)
+  end
+
+  def to_s
+    "ChefRun for recipe[#{@recipe}]"
+  end
+end
+
 # mock ohai attributes
 def mock_ohai(attrs = {})
   Fauxhai.mock do |node|
@@ -10,7 +30,3 @@ def mock_ohai(attrs = {})
   end
 end
 
-# converge node with the given recipe
-def converge_node(recipe)
-  ChefSpec::ChefRunner.new.converge recipe
-end
