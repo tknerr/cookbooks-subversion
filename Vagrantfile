@@ -11,7 +11,7 @@ Vagrant::Config.run do |config|
 
   config.vm.provision :chef_solo do |chef|
     chef.cookbooks_path = [ "./cookbooks", ".." ]
-    chef.data_bags_path = "./test/kitchen/data_bags"
+    chef.data_bags_path = "./test/data_bags"
 
     chef.add_recipe "vagrant-ohai"
     chef.add_recipe "subversion::server"
