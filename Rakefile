@@ -1,4 +1,4 @@
-require 'faster_require'
+# require 'faster_require'
 require 'foodcritic'
 
 desc "default: run tests"
