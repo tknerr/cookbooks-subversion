@@ -8,7 +8,7 @@ class ChefRun
   end
 
   def converge
-    @runner = ChefSpec::ChefRunner.new(:cookbook_path => ['..'])
+    @runner = ChefSpec::ChefRunner.new
     @runner.converge @recipe
   end
 
