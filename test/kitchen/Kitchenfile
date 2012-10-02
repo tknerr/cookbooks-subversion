@@ -7,7 +7,7 @@ end
 platform :ubuntu do
   version "12.04" do
     box "ubuntu-12.04-server-amd64-vagrant"
-    box_url "W:\\boxes\\ubuntu-12.04-server-amd64-vagrant.box"
+    box_url "F:\\baseboxes\\ubuntu-12.04-server-amd64-vagrant.box"
     # box_url "http://dl.dropbox.com/u/13494216/ubuntu-12.04-server-amd64-vagrant.box"
   end
 end
@@ -15,6 +15,5 @@ end
 cookbook "subversion" do
   configuration "client"
   configuration "server"
-  runtimes ['1.9.2']
-  run_list_extras ['subversion_test::setup']
+  runtimes ['1.9.3']
 end
