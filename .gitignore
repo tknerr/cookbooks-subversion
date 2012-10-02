@@ -1,3 +1,6 @@
 .vagrant
 test/kitchen/.kitchen
 Gemfile.lock
+Cheffile.lock
+tmp/
+cookbooks/
