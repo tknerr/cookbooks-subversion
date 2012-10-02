@@ -14,5 +14,6 @@ end
 
 desc "run chefspec examples"
 task :chefspec do
+  sh "librarian-chef install", :verbose=>false
   sh "bundle exec rspec", :verbose=>false
 end

@@ -8,7 +8,7 @@ class ChefRun
   end
 
   def converge
-    @runner = ChefSpec::ChefRunner.new
+    @runner = ChefSpec::ChefRunner.new(:cookbook_path => ['../subversion/cookbooks', '..'])
     @runner.converge @recipe
   end
 
