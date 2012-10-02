@@ -1,12 +1,6 @@
 
 
-# install rvm and default 1.9.2 ruby for the vagrant user
+# make sure we have latest chef on the basebox
+node.set['omnibus_updater']['version'] = '10.14.4-1'
 
-node.set['rvm']['user_installs'] = [
-  { 'user'          => 'vagrant',
-    'default_ruby'  => 'ruby-1.9.2-p320',
-    'rubies'        => [] 
-  }
-]
-
-include_recipe "rvm::user"
+include_recipe "omnibus_updater"

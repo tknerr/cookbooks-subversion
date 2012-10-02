@@ -16,4 +16,5 @@ cookbook "subversion" do
   configuration "client"
   configuration "server"
   runtimes ['1.9.3']
+  run_list_extras ['subversion_test::setup']
 end
