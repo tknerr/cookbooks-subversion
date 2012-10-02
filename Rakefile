@@ -9,7 +9,7 @@ task :test => [:foodcritic, :chefspec]
 
 desc "run foodcritic lint checks"
 task :foodcritic do 
-  sh "bundle exec foodcritic --epic-fail any #{File.dirname(__FILE__)}", :verbose=>false
+  sh "bundle exec foodcritic --tags ~FC024 --epic-fail any #{File.dirname(__FILE__)}", :verbose=>false
 end
 
 desc "run chefspec examples"
