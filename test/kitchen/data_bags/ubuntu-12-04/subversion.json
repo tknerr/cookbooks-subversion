@@ -1,0 +1,13 @@
+{
+  "id": "subversion",
+  "repos": [
+    {
+      "name": "repo1", 
+      "rw": ["hans", "peter"],
+      "r": ["karl"]
+    },
+    {
+      "name": "repo2", 
+      "rw": ["karl", "ulli"]
+    }]
+}
