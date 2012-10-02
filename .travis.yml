@@ -3,4 +3,5 @@ rvm:
   - 1.9.2
   - 1.9.3
 before_install:
-  - ln -s ./cookbooks-subversion ./subversion 
+  - ln -s ./cookbooks-subversion ./subversion
+  - ls -la 
