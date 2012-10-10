@@ -47,9 +47,14 @@ web_app "subversion" do
 end
 
 
-Chef::Log.info "Checking configured subversion repos for #{node['fqdn']}"
-repos_per_host = data_bag_item("subversion", "repos")
-repos = repos_per_host[node['fqdn']]
+begin
+  Chef::Log.info "Checking configured subversion repos for #{node['fqdn']}"
+  repos_per_host = data_bag_item("subversion", "repos")
+  repos = repos_per_host[node['fqdn']]
+rescue Net::HTTPServerException => e
+  repos = nil
+  Chef::Log.warn "Data bag 'subversion' with item 'repos' is missing, not configuring any repositories..."
+end
 
 # only do something if repos are configured (and only additive)
 if repos
@@ -91,14 +96,9 @@ end
 template "#{svn_base}/access.conf" do
   source "access.conf.erb"
   variables(
-    :repositories => repos
+    :repositories => repos || []
   )
   owner "root"
   group "root"
   mode "0644"
 end
-
-
-
-
- 
