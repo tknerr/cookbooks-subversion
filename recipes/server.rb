@@ -78,9 +78,14 @@ if repos
   end
 
   # make sure users are added to htpasswd
-  users_per_host = data_bag_item("subversion", "users")
-  users = users_per_host[node['fqdn']]
-  
+  begin
+    #users_per_host = data_bag_item("subversion", "users")
+    users_per_host = Chef::EncryptedDataBagItem.load("subversion", "users")
+    users = users_per_host[node['fqdn']]
+  rescue Net::HTTPServerException => e
+    raise "required 'users' item not found in databag 'subversion'"
+  end
+
   repo_users.uniq.each do |username|
     user = users.find {|u| u["name"] == username}
     raise "user #{username} does not exist" unless user
