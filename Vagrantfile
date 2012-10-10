@@ -14,6 +14,7 @@ Vagrant::Config.run do |config|
     chef.data_bags_path = "./test/data_bags"
 
     chef.add_recipe "vagrant-ohai"
+    chef.add_recipe "apt"
     chef.add_recipe "subversion::server"
     
     chef.json = { }
