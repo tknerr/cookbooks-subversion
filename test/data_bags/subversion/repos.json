@@ -1,6 +1,6 @@
 {
-  "id": "subversion",
-  "repos": [
+  "id": "repos",
+  "subversion.local": [
     {
       "name": "repo1", 
       "rw": ["hans", "peter"],
@@ -9,5 +9,6 @@
     {
       "name": "repo2", 
       "rw": ["karl", "ulli"]
-    }]
+    }
+  ]
 }

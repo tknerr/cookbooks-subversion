@@ -1,6 +1,6 @@
 {
   "id": "users",
-  "users": [
+  "subversion.local": [
     {
       "name": "hans", 
       "password": "123"
@@ -16,5 +16,6 @@
     {
       "name": "ulli", 
       "password": "123"
-    }]
+    }
+  ]
 }

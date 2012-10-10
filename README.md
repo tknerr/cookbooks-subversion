@@ -36,13 +36,15 @@ The repositories and users are defined in databags as shown below.
 Databags
 ========
 
-For the `subversion::server` recipe the repositories and access rights are managed in a databag per host (i.e. identified by `node['hostname']`) in the `subversion` item.
+For the `subversion::server` recipe the subversion users, repositories and permissions are managed in the `subversion` databag.
 
-Example: `$CHEF_REPO/databags/#{node['hostname']}/subversion.json`
+Within this data bag there is the `repos` item which describes the repositories and access rights per host (as identified by `node['fqdn']`).
+
+Example: `$CHEF_REPO/databags/subversion/repos.json`
 ```
 {
-  "id": "subversion",
-  "repos": [
+  "id": "repos",
+  "your.hostname.fqdn": [
     {
       "name": "repo1", 
       "rw": ["hans", "peter"],
@@ -51,17 +53,18 @@ Example: `$CHEF_REPO/databags/#{node['hostname']}/subversion.json`
     {
       "name": "repo2", 
       "rw": ["karl", "ulli"]
-    }]
+    }
+  ]
 }
 ```
 
-For now the users and their credentials are defined in a global `users` databag in the `users` item, but should be replaced by another mechanism (or at least using encrypted databags) in the future.
+The `users` item is a data bag item which contains the users and their subversion passwords per host. 
 
-Example: `$CHEF_REPO/databags/users/users.json`
+Example: `$CHEF_REPO/databags/subversion/users.json` (in unexcrypted form)
 ```
 {
   "id": "users",
-  "users": [
+  "your.hostname.fqdn": [
     {
       "name": "hans", 
       "password": "123"
@@ -77,9 +80,12 @@ Example: `$CHEF_REPO/databags/users/users.json`
     {
       "name": "ulli", 
       "password": "123"
-    }]
+    }
+  ]
 }
 ```
+
+
 
 Recipes
 =======

@@ -47,37 +47,45 @@ web_app "subversion" do
 end
 
 
-subversion_bag = data_bag_item(node['hostname'], "subversion")
-Chef::Log.info "subversion bag: #{subversion_bag.inspect}"
-repos = subversion_bag["repos"]
+Chef::Log.info "Checking configured subversion repos for #{node['fqdn']}"
+repos_per_host = data_bag_item("subversion", "repos")
+repos = repos_per_host[node['fqdn']]
 
-users_bag = data_bag_item("users", "users")
-Chef::Log.info "users bag: #{users_bag.inspect}"
-global_users = users_bag["users"]
+# only do something if repos are configured (and only additive)
+if repos
+  Chef::Log.info "configuring subversion repos on #{node['fqdn']}: #{repos.inspect}"
 
-repo_users = []
-repos.each do |repo|
+  # create repos
+  repo_users = []
+  repos.each do |repo|
 
-  repo_name = repo['name']
-  execute "svnadmin create repo #{repo_name}" do
-    command "svnadmin create #{repo_base}/#{repo_name}"
-    creates "#{repo_base}/#{repo_name}"
-    user node['apache']['user']
-    group node['apache']['user']
-    environment ({'HOME' => '/var/www'})
+    repo_name = repo['name']
+    execute "svnadmin create repo #{repo_name}" do
+      command "svnadmin create #{repo_base}/#{repo_name}"
+      creates "#{repo_base}/#{repo_name}"
+      user node['apache']['user']
+      group node['apache']['user']
+      environment ({'HOME' => '/var/www'})
+    end
+
+    repo_users += (repo["rw"] || []) 
+    repo_users += (repo["r"] || [])
   end
 
-  repo_users += (repo["rw"] || []) 
-  repo_users += (repo["r"] || [])
-end
-
-repo_users.uniq.each do |username|
-  user = global_users.find {|u| u["name"] == username}
-  raise "user #{username} does not exist" unless user
+  # make sure users are added to htpasswd
+  users_per_host = data_bag_item("subversion", "users")
+  users = users_per_host[node['fqdn']]
   
-  execute "adding #{username} to #{svn_base}/htpasswd" do
-    command "htpasswd -sb #{svn_base}/htpasswd #{user['name']} #{user['password']}"
+  repo_users.uniq.each do |username|
+    user = users.find {|u| u["name"] == username}
+    raise "user #{username} does not exist" unless user
+    
+    execute "adding #{username} to #{svn_base}/htpasswd" do
+      command "htpasswd -sb #{svn_base}/htpasswd #{user['name']} #{user['password']}"
+    end
   end
+else
+  Chef::Log.info "no subversion repos configured for #{node['fqdn']}"
 end
 
 template "#{svn_base}/access.conf" do
