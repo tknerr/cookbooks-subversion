@@ -2,12 +2,12 @@
   "id": "repos",
   "subversion.local": [
     {
-      "name": "repo1", 
+      "name": "repo1:/", 
       "rw": ["hans", "peter"],
       "r": ["karl"]
     },
     {
-      "name": "repo2", 
+      "name": "repo2:/some/path", 
       "rw": ["karl", "ulli"]
     }
   ]
