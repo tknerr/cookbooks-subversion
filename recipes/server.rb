@@ -49,22 +49,29 @@ end
 
 begin
   Chef::Log.info "Checking configured subversion repos for #{node['fqdn']}"
-  repos_per_host = data_bag_item("subversion", "repos")
-  repos = repos_per_host[node['fqdn']]
+  repo_access_rules_per_host = data_bag_item("subversion", "repos")
+  repo_access_rules = repo_access_rules_per_host[node['fqdn']]
 rescue Net::HTTPServerException => e
-  repos = nil
+  repo_access_rules = nil
   Chef::Log.warn "Data bag 'subversion' with item 'repos' is missing, not configuring any repositories..."
 end
 
-# only do something if repos are configured (and only additive)
-if repos
-  Chef::Log.info "configuring subversion repos on #{node['fqdn']}: #{repos.inspect}"
+# only do something if repo_access_rules are configured (and only additive)
+if repo_access_rules
+  Chef::Log.info "configuring subversion repo_access_rules on #{node['fqdn']}: #{repo_access_rules.inspect}"
 
-  # create repos
+  # collect all mentioned users
   repo_users = []
-  repos.each do |repo|
+  repo_access_rules.each do |rule|
+    repo_users += (rule["rw"] || []) 
+    repo_users += (rule["r"] || [])
+  end
 
-    repo_name = repo['name']
+  repos = repo_access_rules.map{ |rule| rule['name'].gsub(/:.*/, '') }.uniq
+  Chef::Log.info "creating subversion repos on #{node['fqdn']}: #{repos.inspect}"
+  
+  # create repos
+  repos.each do |repo_name|
     execute "svnadmin create repo #{repo_name}" do
       command "svnadmin create #{repo_base}/#{repo_name}"
       creates "#{repo_base}/#{repo_name}"
@@ -72,38 +79,42 @@ if repos
       group node['apache']['user']
       environment ({'HOME' => '/var/www'})
     end
-
-    repo_users += (repo["rw"] || []) 
-    repo_users += (repo["r"] || [])
   end
 
-  # make sure users are added to htpasswd
+  # get repo users as configured in subversion/users data bag
   begin
-    #users_per_host = data_bag_item("subversion", "users")
     users_per_host = Chef::EncryptedDataBagItem.load("subversion", "users")
     users = users_per_host[node['fqdn']]
   rescue Net::HTTPServerException => e
     raise "required 'users' item not found in databag 'subversion'"
   end
-
+  
+  # make sure users are added to htpasswd
   repo_users.uniq.each do |username|
-    user = users.find {|u| u["name"] == username}
-    raise "user #{username} does not exist" unless user
-    
-    execute "adding #{username} to #{svn_base}/htpasswd" do
-      command "htpasswd -sb #{svn_base}/htpasswd #{user['name']} #{user['password']}"
+    unless username == "*"
+      user = users.find {|u| u["name"] == username}
+      raise "user #{username} does not exist" unless user
+      
+      execute "adding #{username} to #{svn_base}/htpasswd" do
+        command "htpasswd -sb #{svn_base}/htpasswd #{user['name']} #{user['password']}"
+      end
     end
   end
 else
-  Chef::Log.info "no subversion repos configured for #{node['fqdn']}"
+  Chef::Log.info "no subversion repo_access_rules configured for #{node['fqdn']}"
 end
 
 template "#{svn_base}/access.conf" do
   source "access.conf.erb"
   variables(
-    :repositories => repos || []
+    :access_rules => repo_access_rules || []
   )
   owner "root"
   group "root"
   mode "0644"
 end
+
+
+
+
+ 

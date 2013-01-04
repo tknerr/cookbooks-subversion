@@ -7,7 +7,7 @@ Vagrant::Config.run do |config|
   config.vm.box_url = "https://opscode-vm.s3.amazonaws.com/vagrant/boxes/opscode-ubuntu-12.04.box"
 
   config.vm.network :hostonly, "192.168.33.12"
-  config.vm.host_name = "subversion.local"  
+  config.vm.host_name = "subversion.local"
 
   config.vm.provision :chef_solo do |chef|
     chef.cookbooks_path = [ "./cookbooks", ".." ]
@@ -16,7 +16,7 @@ Vagrant::Config.run do |config|
     chef.add_recipe "vagrant-ohai"
     chef.add_recipe "apt"
     chef.add_recipe "subversion::server"
-    
+
     chef.json = { }
     chef.log_level = :debug
   end

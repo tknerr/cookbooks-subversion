@@ -1,19 +1,13 @@
-[groups]
-<% @repositories.each do |repository| %>
-<% if repository['rw'] %>
-<%= repository['name'] %>_commiters = <%= repository['rw'].join(',') %>
-<% end %>
-<% if repository['r'] -%>
-<%= repository['name'] %>_trackers = <%= repository['r'].join(',') %>
+<% @access_rules.each do |access_rule| %>
+[<%= access_rule['name'] %>]
+<% if access_rule['rw'] %>
+<% access_rule['rw'].each do |rw_user| %> 
+<%= rw_user %> = rw
 <% end %>
 <% end %>
-
-<% @repositories.each do |repository| %>
-[<%= repository['name'] %>:/]
-<% if repository['rw'] %>
-@<%= repository['name'] %>_commiters = rw
+<% if access_rule['r'] %>
+<% access_rule['r'].each do |r_user| %> 
+<%= r_user %> = r
 <% end %>
-<% if repository['r'] %>
-@<%= repository['name'] %>_trackers = r
 <% end %>
 <% end %>
