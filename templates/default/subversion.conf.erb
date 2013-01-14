@@ -1,3 +1,9 @@
+
+# make subversion via Apache/DAV work behind nginx proxy, see
+# http://hi.baidu.com/weiqidocument/item/d541bee8a6a278acce2d4f51
+# http://svn.haxx.se/users/archive-2006-03/0549.shtml
+RequestHeader edit Destination ^https http early
+
 <Location /svn>
     DAV svn 
     SVNParentPath <%= node['subversion']['repo_base_dir'] %>
