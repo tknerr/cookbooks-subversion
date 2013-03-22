@@ -40,27 +40,27 @@ For the `subversion::server` recipe the subversion users, repositories and permi
 
 Within this data bag there is the `repos` item which describes the repositories and access rights per host (as identified by `node['fqdn']`).
 
-Example: `$CHEF_REPO/databags/subversion/repos.json`
+Example: `knife data bag show subversion repos`
 ```
 {
   "id": "repos",
   "your.hostname.fqdn": [
     {
-      "name": "repo1", 
+      "name": "repo1:/", 
       "rw": ["hans", "peter"],
       "r": ["karl"]
     },
     {
-      "name": "repo2", 
+      "name": "repo2:/some/path/within/repo", 
       "rw": ["karl", "ulli"]
     }
   ]
 }
 ```
 
-The `users` item is a data bag item which contains the users and their subversion passwords per host. 
+The `users` item is an encrypted data bag item which contains the users and their subversion passwords per host. 
 
-Example: `$CHEF_REPO/databags/subversion/users.json` (in unexcrypted form)
+Example: `knife data bag show subversion users --secret=t0pS3cR3t`:
 ```
 {
   "id": "users",
@@ -85,6 +85,7 @@ Example: `$CHEF_REPO/databags/subversion/users.json` (in unexcrypted form)
 }
 ```
 
+In order to show, create or edit the encrypted data bag you need to pass the `--secret` or `--secret-file` parameter. If you are working with Chef Solo, you can install the [knife-solo_data_bag](https://github.com/thbishop/knife-solo_data_bag) gem and use the `knife *solo* data bag ...` commands.  
 
 
 Recipes
