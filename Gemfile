@@ -10,6 +10,9 @@ gem 'foodcritic','~>1.6.1'
 gem 'chef', '~> 10.14.4'
 gem 'librarian', '~> 0.0.20'
 
+# pin json dependency other to avoid conflict with chef <-> foodcritic
+gem 'json', '1.6.0'
+
 # extra gems required by chef on windows (see GH-5)
 platforms :mswin, :mingw do
   gem 'ruby-wmi', '0.4.0'
