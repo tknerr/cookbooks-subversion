@@ -20,7 +20,7 @@
 include_recipe "apache2::mod_dav_svn"
 include_recipe "subversion::client"
 
-unless node.platform == "ubuntu" && node.platform_version.to_s == "11.10"
+unless node['platform'] == "ubuntu" && node['platform_version'].to_s == "11.10"
   apache_module "authz_svn"
 end
 
