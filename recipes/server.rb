@@ -20,7 +20,9 @@
 include_recipe "apache2::mod_dav_svn"
 include_recipe "subversion::client"
 
-apache_module "authz_svn"
+unless node.platform == "ubuntu" && node.platform_version.to_s == "11.10"
+  apache_module "authz_svn"
+end
 
 svn_base = node['subversion']['svn_dir']
 repo_base = node['subversion']['repo_base_dir']
